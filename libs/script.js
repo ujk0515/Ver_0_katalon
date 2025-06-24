@@ -371,7 +371,7 @@ function convertToCSV(data) {
         });
         csvRows.push(values.join(','));
     });
-    return csvRows.join('\n');
+    return '\uFEFF' + csvRows.join('\n');
 }
 
 function downloadResult(type) {
