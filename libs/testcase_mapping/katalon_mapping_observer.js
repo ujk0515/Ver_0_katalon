@@ -330,7 +330,10 @@ const KATALON_MAPPING_OBSERVER = [
   { keywords: ["리퀴드", "유동성"], action: "Get Text", type: "verification", frequency: 0, status: "observer_mapped" },
   { keywords: ["볼륨", "거래량"], action: "Get Text", type: "verification", frequency: 0, status: "observer_mapped" },
   { keywords: ["캡", "시가총액"], action: "Get Text", type: "verification", frequency: 0, status: "observer_mapped" },
-  { keywords: ["펀딩", "자금조달"], action: "Get Text", type: "verification", frequency: 0, status: "observer_mapped" }
+  { keywords: ["펀딩", "자금조달"], action: "Get Text", type: "verification", frequency: 0, status: "observer_mapped" },
+  { keywords: ["업로드시", "업로드 시", "업로드할때"], action: "Upload File", type: "action", frequency: 50, status: "observer_mapped" },
+  { keywords: ["드래그시", "드래그 시", "드래그할때"], action: "Drag And Drop", type: "action", frequency: 30, status: "observer_mapped" },
+  { keywords: ["시도시", "시도 시", "시도할때"], action: "Attempt", type: "attempt", frequency: 25, status: "observer_mapped" },
 ];
 
 // ================================
