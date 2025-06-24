@@ -359,27 +359,48 @@ function executeSplit() {
   }
 }
 
+function convertToCSV(data) {
+    if (data.length === 0) return '';
+    const headers = Object.keys(data[0]);
+    const csvRows = [];
+    csvRows.push(headers.join(','));
+    data.forEach(row => {
+        const values = headers.map(header => {
+            const value = row[header] || '';
+            return `"${value.toString().replace(/"/g, '""')}"`;
+        });
+        csvRows.push(values.join(','));
+    });
+    return csvRows.join('\n');
+}
+
 function downloadResult(type) {
-  const wb = XLSX.utils.book_new();
-  let ws;
-  
-  if (type === 'merged') {
-    if (tcMergedExport.length === 0) {
-      alert('병합 결과가 없습니다. CSV 파일을 업로드하고 병합을 실행해주세요.');
-      return;
+    const wb = XLSX.utils.book_new();
+    let ws;
+    
+    if (type === 'merged') {
+        if (tcMergedExport.length === 0) {
+            alert('병합 결과가 없습니다. CSV 파일을 업로드하고 병합을 실행해주세요.');
+            return;
+        }
+        ws = XLSX.utils.json_to_sheet(tcMergedExport);
+        XLSX.utils.book_append_sheet(wb, ws, 'Merged Result');
+        XLSX.writeFile(wb, 'merged_result.xlsx');
+    } else if (type === 'split') {
+        if (tcSplitExport.length === 0) {
+            alert('분리 결과가 없습니다. Excel 파일을 업로드하고 분리를 실행해주세요.');
+            return;
+        }
+        
+        const csvContent = convertToCSV(tcSplitExport);
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'split_result.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
-    ws = XLSX.utils.json_to_sheet(tcMergedExport);
-    XLSX.utils.book_append_sheet(wb, ws, 'Merged Result');
-    XLSX.writeFile(wb, 'merged_result.xlsx');
-  } else if (type === 'split') {
-    if (tcSplitExport.length === 0) {
-      alert('분리 결과가 없습니다. Excel 파일을 업로드하고 분리를 실행해주세요.');
-      return;
-    }
-    ws = XLSX.utils.json_to_sheet(tcSplitExport);
-    XLSX.utils.book_append_sheet(wb, ws, 'Split Result');
-    XLSX.writeFile(wb, 'split_result.xlsx');
-  }
 }
 
 // HTML에서 호출하는 함수들 추가
