@@ -275,7 +275,7 @@ function executeSplit() {
 
   tcSplitExport = [];
   let html = `<table class="tcmerger-table"><thead><tr>
-    <th>Folder</th><th>Main Category</th><th>Sub Category</th><th>Detail Category</th>
+    <th>Folder</th><th>Name</th><th>Main Category</th><th>Sub Category</th><th>Detail Category</th>
     <th>TC Summary</th><th>Precondition</th><th>Test Level</th>
     <th>Expected Result</th><th>Steps (Step)</th>
     <th>Step 1</th><th>Step 2</th><th>Step 3</th><th>Step 4</th><th>Step 5</th><th>Step 6</th>
@@ -319,6 +319,7 @@ function executeSplit() {
 
     tcSplitExport.push({
       'Folder': row['Folder'] || '',
+      'Name': tcSummary,
       'Main Category': row['Main Category'] || '',
       'Sub Category': row['Sub Category'] || '',
       'Detail Category': row['Detail Category'] || '',
@@ -333,6 +334,7 @@ function executeSplit() {
 
     html += `<tr>
       <td>${preserveLineBreaks(row['Folder'] || '')}</td>
+      <td>${preserveLineBreaks(tcSummary)}</td>
       <td>${preserveLineBreaks(row['Main Category'] || '')}</td>
       <td>${preserveLineBreaks(row['Sub Category'] || '')}</td>
       <td>${preserveLineBreaks(row['Detail Category'] || '')}</td>
