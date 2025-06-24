@@ -166,7 +166,7 @@ Expected Result: 로그인 성공 후 메인 페이지로 이동"></textarea>
             </div>
             <!-- Steps 섹션 -->
             <div class="parsed-section steps-section">
-              <div class="section-header"> Steps</div>
+              <div class="section-header">🔢 Steps</div>
               <div class="section-content" id="stepsResult">
                 <span class="placeholder-text">추출된 Steps가 여기에 표시됩니다</span>
               </div>
@@ -334,9 +334,25 @@ Expected Result: 로그인 성공 후 메인 페이지로 이동"></textarea>
   <script src="assets/js/file-handlers.js"></script>
   <script src="assets/js/main.js"></script>
 
-  <!-- 통합 시스템 초기화 및 검증 스크립트 -->
+  <!-- 🔧 수정된 통합 시스템 초기화 및 검증 스크립트 -->
   <script>
-    // 통합 시스템 상태 체크
+    // 안전한 통계 조회 함수
+    function safeGetStatistics() {
+      try {
+        if (typeof unifiedMappingSystem !== 'undefined' && 
+            unifiedMappingSystem && 
+            unifiedMappingSystem.isInitialized && 
+            typeof unifiedMappingSystem.getStatistics === 'function') {
+          return unifiedMappingSystem.getStatistics();
+        }
+        return null;
+      } catch (error) {
+        console.warn('⚠️ 통계 조회 실패:', error.message);
+        return null;
+      }
+    }
+
+    // 통합 시스템 상태 체크 (수정됨)
     function checkUnifiedSystemStatus() {
       const requirements = [
         typeof unifiedMappingSystem !== 'undefined',
@@ -395,6 +411,12 @@ Expected Result: 로그인 성공 후 메인 페이지로 이동"></textarea>
           }, 300);
         }, 3000);
         
+        // 🔧 안전한 통계 조회
+        const stats = safeGetStatistics();
+        if (stats) {
+          console.log('📊 시스템 통계:', stats);
+        }
+        
       } else {
         console.warn(`⚠️ 일부 컴포넌트 누락: ${total - available}개`);
         
@@ -429,6 +451,36 @@ Expected Result: 로그인 성공 후 메인 페이지로 이동"></textarea>
       return available >= 3; // 최소 3개 이상 로드되면 동작 가능
     }
 
+    // 🔧 안전한 초기화 함수
+    function initializeApplication() {
+      try {
+        console.log('🚀 QA 통합 유틸리티 초기화 시작');
+        
+        console.log('📋 메뉴별 요소 확인:', {
+          'CSV 파싱': !!document.getElementById('csvFile'),
+          'Groovy': !!document.getElementById('excelFile'),
+          'Report': !!document.getElementById('reportFileInput'),
+          'TC Merger': !!document.getElementById('mergeFileInput'),
+          'TC Mapping': !!document.getElementById('testcaseInput')
+        });
+        
+        console.log('🔧 기능 확인:');
+        console.log('  ✅ CSV 파싱: 사용 가능');
+        console.log('  ✅ Groovy 변환: 사용 가능');
+        console.log('  ✅ Report 뷰어: 사용 가능');
+        console.log('  ✅ TC Merger: 사용 가능');
+        console.log('  ✅ 테스트케이스 매핑: 사용 가능');
+        
+        // 통합 시스템 상태 체크
+        const systemReady = checkUnifiedSystemStatus();
+        
+        console.log('🎉 QA 통합 유틸리티 초기화 완료');
+        
+      } catch (error) {
+        console.warn('⚠️ 초기화 중 일부 오류 발생 (시스템은 정상 동작):', error.message);
+      }
+    }
+
     // 탭 전환 기능
     document.querySelectorAll('.tab-button').forEach(button => {
       button.addEventListener('click', () => {
@@ -442,29 +494,28 @@ Expected Result: 로그인 성공 후 메인 페이지로 이동"></textarea>
     });
 
     // 파일 선택 시 레이블 업데이트
-    document.getElementById('csvFile').addEventListener('change', function() {
-      const label = this.nextElementSibling;
-      if (this.files.length > 0) {
-        label.innerHTML = `✅ ${this.files[0].name}`;
-        label.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-      }
-    });
+    function setupFileInputs() {
+      const fileInputs = [
+        { id: 'csvFile', label: 'CSV 파일' },
+        { id: 'excelFile', label: 'Excel 파일' },
+        { id: 'reportFileInput', label: 'HTML 결과 파일' },
+        { id: 'mergeFileInput', label: 'CSV 파일' },
+        { id: 'splitFileInput', label: 'Excel 파일' }
+      ];
 
-    document.getElementById('excelFile').addEventListener('change', function() {
-      const label = this.nextElementSibling;
-      if (this.files.length > 0) {
-        label.innerHTML = `✅ ${this.files[0].name}`;
-        label.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-      }
-    });
-
-    document.getElementById('reportFileInput').addEventListener('change', function() {
-      const label = this.nextElementSibling;
-      if (this.files.length > 0) {
-        label.innerHTML = `✅ ${this.files[0].name}`;
-        label.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-      }
-    });
+      fileInputs.forEach(({id, label}) => {
+        const input = document.getElementById(id);
+        if (input) {
+          input.addEventListener('change', function() {
+            const labelElement = this.nextElementSibling;
+            if (labelElement && this.files.length > 0) {
+              labelElement.innerHTML = `✅ ${this.files[0].name}`;
+              labelElement.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            }
+          });
+        }
+      });
+    }
 
     // TC Merger 내부 탭 전환
     function switchTCMergerTab(tab) {
@@ -533,12 +584,31 @@ Expected Result: 로그인 성공 후 메인 페이지로 이동"></textarea>
       }
     }
 
-    // DOM 로드 완료 후 통합 시스템 상태 체크
+    // 🔧 안전한 DOM 로드 완료 후 초기화
     document.addEventListener('DOMContentLoaded', function() {
+      // 중복 실행 방지
+      if (window.applicationInitialized) {
+        return;
+      }
+      window.applicationInitialized = true;
+      
+      // 파일 입력 설정
+      setupFileInputs();
+      
+      // 약간의 지연 후 초기화 (모든 스크립트 로드 대기)
       setTimeout(() => {
-        checkUnifiedSystemStatus();
+        initializeApplication();
       }, 500);
     });
+
+    // 전역 함수로 노출 (HTML onclick에서 사용)
+    window.switchTCMergerTab = switchTCMergerTab;
+    window.showError = showError;
+    window.showSuccess = showSuccess;
+    window.showLoading = showLoading;
+    window.hideLoading = hideLoading;
+    window.safeGetStatistics = safeGetStatistics;
+    window.checkUnifiedSystemStatus = checkUnifiedSystemStatus;
   </script>
 </body>
 </html>

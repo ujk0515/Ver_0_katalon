@@ -801,6 +801,18 @@ const ATTEMPT_ACTION_COMBINATIONS = [
   }
 ];
 
+const VIDEO_COUNT_COMBINATIONS = [
+  {
+    pattern: "개수 + 확인",
+    combinations: [
+      { words: ["총", "개수"], result: "총개수확인", meaning: "전체 개수 확인", action: "Get Text", type: "verification" },
+      { words: ["전체", "개수"], result: "전체개수확인", meaning: "전체 개수 확인", action: "Get Text", type: "verification" },
+      { words: ["최대", "개수"], result: "최대개수확인", meaning: "최대 개수 확인", action: "Get Text", type: "verification" },
+      { words: ["개수", "확인"], result: "개수확인", meaning: "개수 확인", action: "Get Text", type: "verification" }
+    ]
+  }
+];
+
 // ================================
 // 기존 매핑과 통합된 최종 매핑
 // ================================
@@ -1213,7 +1225,18 @@ if (typeof module !== 'undefined' && module.exports) {
         window.getDynamicXPath = getDynamicXPath;
         
         // 전역 스코프에도 설정
+        if (typeof window !== 'undefined') {
+        window.KATALON_MAPPING_COMPLETE = KATALON_MAPPING_COMPLETE;
+        window.VIDEO_COUNT_COMBINATIONS = VIDEO_COUNT_COMBINATIONS; // 추가
+            
+        // 전역 스코프에도 설정 (안전하게)
+        try {
         window.eval('var KATALON_MAPPING_COMPLETE = window.KATALON_MAPPING_COMPLETE;');
+        window.eval('var VIDEO_COUNT_COMBINATIONS = window.VIDEO_COUNT_COMBINATIONS;');
+        } catch (e) {
+          console.warn('전역 변수 설정 실패:', e);
+        }
+      }
         
         console.log('✅ 하드코딩 제거 완료! 전역 매핑 데이터 설정:', {
             'KATALON_MAPPING_COMPLETE': KATALON_MAPPING_COMPLETE.length,

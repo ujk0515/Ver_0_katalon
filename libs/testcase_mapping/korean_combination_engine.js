@@ -29,13 +29,35 @@ function checkDependencies() {
     'KATALON_MAPPING_COMPLETE'
   ];
   
-  const missing = required.filter(dep => 
-    typeof window !== 'undefined' ? !window[dep] : typeof global[dep] === 'undefined'
-  );
+  const missing = [];
+  
+  required.forEach(dep => {
+    let exists = false;
+    
+    if (typeof window !== 'undefined') {
+      // window 객체에서 확인
+      exists = window[dep] !== undefined;
+      
+      // 전역 스코프에서도 확인
+      if (!exists) {
+        try {
+          exists = eval(`typeof ${dep} !== 'undefined'`);
+        } catch (e) {
+          exists = false;
+        }
+      }
+    } else if (typeof global !== 'undefined') {
+      exists = global[dep] !== undefined;
+    }
+    
+    if (!exists) {
+      missing.push(dep);
+    }
+  });
   
   if (missing.length > 0) {
-    console.warn('⚠️ 누락된 의존성:', missing);
-    return false;
+    console.warn('⚠️ 누락된 의존성 (기본 모드로 진행):', missing);
+    return false; // 여전히 false 반환하지만 에러는 발생시키지 않음
   }
   
   return true;
@@ -59,13 +81,13 @@ class KoreanCombinationEngine {
       averageProcessTime: 0
     };
     
-    // 의존성 체크
-    if (!checkDependencies()) {
-      console.error('❌ 필수 데이터 파일이 로드되지 않았습니다.');
-      return;
+    // 의존성 체크 (실패해도 계속 진행)
+    const depsOk = checkDependencies();
+    if (!depsOk) {
+      console.warn('❌ 일부 데이터 파일이 로드되지 않았지만 기본 모드로 계속 진행합니다.');
     }
     
-    console.log('🚀 한글 조합 매핑 엔진 초기화 완료');
+    console.log('🚀 한글 조합 매핑 엔진 초기화 완료' + (depsOk ? '' : ' (제한된 기능)'));
   }
   
   // ================================

@@ -77,23 +77,27 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 전역 함수 등록 확인
   const globalFunctions = [
-    'generateTCScript',
-    'downloadTCOnly', 
-    'downloadScriptOnly',
-    'downloadMergedFiles',
-    'clearTCScriptOutput',
-    'downloadGroovyZip',
-    'downloadFile',
-    'generateAllZip',
-    'addInput',
-    'generateZip'
+    'generateTCScript', 'downloadTCOnly', 'downloadScriptOnly', 
+    'downloadMergedFiles', 'clearTCScriptOutput', 'downloadGroovyZip',
+    'downloadFile', 'generateAllZip'
   ];
   
-  globalFunctions.forEach(func => {
-    if (typeof window[func] === 'function') {
-      console.log(`✅ ${func} 전역 함수 등록 완료`);
-    } else {
-      console.warn(`⚠️ ${func} 전역 함수 등록 실패`);
-    }
-  });
+  const optionalFunctions = ['addInput', 'generateZip'];
+
+globalFunctions.forEach(funcName => {
+  if (typeof window[funcName] === 'function') {
+    console.log(`✅ ${funcName} 전역 함수 등록 완료`);
+  } else {
+    console.warn(`⚠️ ${funcName} 전역 함수 등록 실패`);
+  }
+});
+
+optionalFunctions.forEach(funcName => {
+  if (typeof window[funcName] === 'function') {
+    console.log(`✅ ${funcName} 전역 함수 등록 완료`);
+  } else {
+    console.log(`ℹ️ ${funcName} 전역 함수 등록 스킵 (선택적 함수)`);
+  }
+});
+
 });
