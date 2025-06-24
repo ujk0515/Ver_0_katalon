@@ -789,6 +789,18 @@ const ADDITIONAL_NATURAL_COMBINATIONS = [
   }
 ];
 
+const ATTEMPT_ACTION_COMBINATIONS = [
+  {
+    pattern: "시도 + 동작",
+    combinations: [
+      { words: ["드래그", "시도"], result: "드래그시도", meaning: "드래그 동작 시도", action: "Drag And Drop", type: "action" },
+      { words: ["업로드", "시도"], result: "업로드시도", meaning: "업로드 동작 시도", action: "Upload File", type: "action" },
+      { words: ["첨부", "시도"], result: "첨부시도", meaning: "파일 첨부 시도", action: "Upload File", type: "action" },
+      { words: ["파일", "드래그"], result: "파일드래그", meaning: "파일 드래그", action: "Drag And Drop", type: "action" }
+    ]
+  }
+];
+
 // ================================
 // 기존 매핑과 통합된 최종 매핑
 // ================================
@@ -821,6 +833,10 @@ const KATALON_MAPPING_COMPLETE = [
   { keywords: ["윈도우", "창"], action: "Switch To Window", type: "navigation", status: "mapped" },
   { keywords: ["프레임", "iframe"], action: "Switch To Frame", type: "navigation", status: "mapped" },
   { keywords: ["알림", "notification"], action: "Get Alert Text", type: "verification", status: "mapped" },
+  { keywords: ["드래그 업로드", "드래그업로드", "드래그 업로드 시"], action: "Drag And Drop", type: "action", status: "mapped" },
+  { keywords: ["업로드 시도", "드래그 시도", "클릭 시도"], action: "Attempt Action", type: "attempt", status: "mapped" },
+  { keywords: ["파일 드래그", "첨부파일 드래그"], action: "Drag And Drop", type: "action", status: "mapped" },
+  { keywords: ["시도시", "시도 시", "동작시"], action: "On Event", type: "event", status: "mapped" },
   { keywords: ["쿠키", "cookie"], action: "Get Cookie", type: "verification", status: "mapped" },
   { keywords: ["로컬스토리지", "localStorage"], action: "Execute JavaScript", type: "action", status: "mapped" },
   { keywords: ["세션스토리지", "sessionStorage"], action: "Execute JavaScript", type: "action", status: "mapped" },
@@ -1058,7 +1074,8 @@ const KATALON_MAPPING_COMPLETE = [
 // 조합으로 생성된 새로운 78개 매핑을 기존 매핑에 추가
 const COMBINATION_MAPPINGS = [
   ...KOREAN_COMBINATIONS.flatMap(pattern => pattern.combinations),
-  ...ADDITIONAL_NATURAL_COMBINATIONS.flatMap(pattern => pattern.combinations)
+  ...ADDITIONAL_NATURAL_COMBINATIONS.flatMap(pattern => pattern.combinations),
+  ...ATTEMPT_ACTION_COMBINATIONS.flatMap(pattern => pattern.combinations),
 ].map(combo => ({
   keywords: [combo.result, combo.meaning, ...combo.words],
   action: combo.action,
