@@ -194,21 +194,39 @@ function executeMerge() {
     let stepIndex = 1;
     
     // Steps (Step) 찾기
-    const stepLikeKeys = Object.keys(row).filter(k => k.toLowerCase().replace(/\s+/g, '') === 'steps(step)');
-    if (stepLikeKeys.length > 0) {
-      const key = stepLikeKeys[0];
-      if (row[key] && row[key].toString().trim()) {
-        combinedSteps += `${stepIndex++}. ${row[key].toString().trim()}\n`;
-      }
-    }
-    
-    // Step 1-6 병합
-    for (let i = 1; i <= 6; i++) {
-      const key = `Step ${i} (Step ${i})`;
-      if (row[key] && row[key].trim()) {
-        combinedSteps += `${stepIndex++}. ${row[key].trim()}\n`;
-      }
-    }
+    // 1. Step (Step) 있는지 확인 - 있으면 1번으로 시작
+        let stepNumber = 1;
+        const stepLikeKeys = Object.keys(row).filter(k => {
+            const normalized = k.toLowerCase().replace(/[\s\(\)]/g, '');
+            return normalized === 'stepstep';  // "Step (Step)" 정확 매칭만
+        });
+        
+        if (stepLikeKeys.length > 0) {
+            const key = stepLikeKeys[0];
+            if (row[key] && row[key].toString().trim()) {
+                combinedSteps += `${stepNumber}. ${row[key].toString().trim()}\n`;
+                stepNumber++;
+            }
+        }
+        
+        // 2. Step n (Step n) 모든 번호 찾기 (동적 확장)
+        const stepColumns = Object.keys(row).filter(k => {
+            // "Step 1 (Step 1)", "Step 2 (Step 2)" ... "Step n (Step n)" 패턴 매칭
+            return /^Step \d+ \(Step \d+\)$/.test(k);
+        }).sort((a, b) => {
+            // 번호 순으로 정렬
+            const numA = parseInt(a.match(/\d+/)[0]);
+            const numB = parseInt(b.match(/\d+/)[0]);
+            return numA - numB;
+        });
+        
+        // 3. Step n (Step n) 순차 처리
+        stepColumns.forEach(stepKey => {
+            if (row[stepKey] && row[stepKey].trim()) {
+                combinedSteps += `${stepNumber}. ${row[stepKey].trim()}\n`;
+                stepNumber++;
+            }
+        });
     
     const finalCombinedSteps = combinedSteps.trim();
     const expectedResult = row['Expected Result (Expected Result)'] || row['Expected Result'] || '';
