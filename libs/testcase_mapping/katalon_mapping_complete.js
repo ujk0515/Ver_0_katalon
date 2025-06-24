@@ -1076,6 +1076,7 @@ const COMBINATION_MAPPINGS = [
   ...KOREAN_COMBINATIONS.flatMap(pattern => pattern.combinations),
   ...ADDITIONAL_NATURAL_COMBINATIONS.flatMap(pattern => pattern.combinations),
   ...ATTEMPT_ACTION_COMBINATIONS.flatMap(pattern => pattern.combinations),
+  ...VIDEO_COUNT_COMBINATIONS.flatMap(pattern => pattern.combinations)
 ].map(combo => ({
   keywords: [combo.result, combo.meaning, ...combo.words],
   action: combo.action,
