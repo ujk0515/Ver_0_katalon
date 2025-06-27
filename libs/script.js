@@ -3,6 +3,8 @@ let tcMergeData = [];
 let tcSplitData = [];
 let tcMergedExport = [];
 let tcSplitExport = [];
+let mergeOriginalFileName = '';
+let splitOriginalFileName = '';
 
 // TESTMO 원본 탭 전환 함수 (기존 유지)
 function switchTab(tab) {
@@ -22,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
     mergeInput.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
+
+      mergeOriginalFileName = file.name;
       
       if (!file.name.endsWith('.csv')) {
         alert('CSV 파일만 업로드할 수 있습니다.');
@@ -82,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
     splitInput.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
+
+      splitOriginalFileName = file.name;
       
       if (!file.name.endsWith('.xlsx')) {
         alert('Excel 파일(.xlsx)만 업로드할 수 있습니다.');
@@ -385,7 +391,10 @@ function downloadResult(type) {
         }
         ws = XLSX.utils.json_to_sheet(tcMergedExport);
         XLSX.utils.book_append_sheet(wb, ws, 'Merged Result');
-        XLSX.writeFile(wb, 'merged_result.xlsx');
+        const downloadFileName = mergeOriginalFileName ? 
+            mergeOriginalFileName.replace('.csv', '.xlsx') : 
+            'merged_result.xlsx';
+        XLSX.writeFile(wb, downloadFileName);
     } else if (type === 'split') {
         if (tcSplitExport.length === 0) {
             alert('분리 결과가 없습니다. Excel 파일을 업로드하고 분리를 실행해주세요.');
@@ -396,7 +405,10 @@ function downloadResult(type) {
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'split_result.csv';
+        const downloadFileName = splitOriginalFileName ? 
+            splitOriginalFileName.replace('.xlsx', '.csv') : 
+            'split_result.csv';
+        link.download = downloadFileName;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
