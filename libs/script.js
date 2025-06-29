@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Combined Steps가 없으면 생성 (유연한 열 매칭)
         tcSplitData.forEach((row, index) => {
-          if (!row['Combined Steps']) {
+          if (!row['Steps']) {
             let combinedSteps = '';
             
             // 1. Steps (Step) 유형의 열 찾기 (유연한 매칭)
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
               }
             }
             
-            tcSplitData[index]['Combined Steps'] = combinedSteps.trim();
+            tcSplitData[index]['Steps'] = combinedSteps.trim();
           }
         });
         
@@ -192,7 +192,7 @@ function executeMerge() {
   let html = `<table class="tcmerger-table"><thead><tr>
     <th>Folder</th><th>Main Category</th><th>Sub Category</th><th>Detail Category</th>
     <th>TC Summary</th><th>Precondition</th><th>Test Level</th>
-    <th>Expected Result</th><th>Combined Steps</th>
+    <th>Expected Result</th><th>Steps</th>
   </tr></thead><tbody>`;
 
   tcMergeData.forEach((row, index) => {
@@ -247,7 +247,7 @@ function executeMerge() {
       'Precondition': row['Precondition'],
       'Test Level': row['Test Level'],
       'Expected Result': numberedExpectedResult,
-      'Combined Steps': finalCombinedSteps
+      'Steps': finalCombinedSteps
     });
     
     html += `<tr>
@@ -283,7 +283,7 @@ function executeSplit() {
   let html = `<table class="tcmerger-table"><thead><tr>
     <th>Folder</th><th>Name</th><th>Main Category</th><th>Sub Category</th><th>Detail Category</th>
     <th>TC Summary</th><th>Precondition</th><th>Test Level</th>
-    <th>Expected Result</th><th>Steps (Step)</th>
+    <th>Expected Result</th><th>Steps</th>
     <th>Step 1</th><th>Step 2</th><th>Step 3</th><th>Step 4</th><th>Step 5</th><th>Step 6</th>
   </tr></thead><tbody>`;
 
